@@ -26,8 +26,8 @@ export const ThemeToggle: React.FC<{
       className={`
         relative inline-flex items-center justify-center
         w-10 h-10 rounded-lg
-        bg-surface dark:bg-dark-surface
-        border border-border dark:border-dark-border
+        bg-white dark:bg-gray-800
+        border border-gray-200 dark:border-gray-700
         hover:bg-gray-100 dark:hover:bg-gray-700
         transition-colors duration-200
         focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
@@ -51,7 +51,7 @@ export const ThemeToggle: React.FC<{
         )}
       </div>
       {showLabel && (
-        <span className="ml-2 text-sm font-medium text-text dark:text-dark-text">
+        <span className="ml-2 text-sm font-medium">
           {isDark ? 'Dark' : 'Light'}
         </span>
       )}
