@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Providers } from '@/app/providers'
 import '@/styles/globals.css'
+import '@/styles/theme.css'
 
 export const metadata: Metadata = {
   title: 'Question Solver - Premium 3D Learning Platform',
@@ -22,7 +23,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#0f0f1e" />
       </head>
-      <body className="bg-dark-bg text-foreground antialiased">
+      <body className="bg-background text-text antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>
