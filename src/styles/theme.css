@@ -1,0 +1,212 @@
+/**
+ * Theme CSS Variables and Global Styles
+ * Applied dynamically by useTheme hook
+ */
+
+:root {
+  /* Light mode defaults */
+  --primary: #0ea5e9;
+  --primary-light: #e0f2fe;
+  --primary-dark: #075985;
+
+  --secondary: #8b5cf6;
+  --secondary-light: #ede9fe;
+  --secondary-dark: #5b21b6;
+
+  --accent: #14b8a6;
+  --accent-light: #ccfbf1;
+  --accent-dark: #0d9488;
+
+  --background: #ffffff;
+  --surface: #f8fafc;
+  --border: #e2e8f0;
+
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+
+  /* Animation durations */
+  --transition-fast: 150ms;
+  --transition-base: 200ms;
+  --transition-slow: 300ms;
+
+  /* Z-index scale */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+/* Dark mode overrides */
+:root.dark {
+  --primary: #0ea5e9;
+  --primary-light: #075985;
+  --primary-dark: #38bdf8;
+
+  --secondary: #8b5cf6;
+  --secondary-light: #5b21b6;
+  --secondary-dark: #a78bfa;
+
+  --accent: #14b8a6;
+  --accent-light: #0d9488;
+  --accent-dark: #5eead4;
+
+  --background: #0f0f1e;
+  --surface: #1a1a2e;
+  --border: #2d3561;
+
+  --text: #e2e8f0;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+
+  /* Neon colors (dark mode only) */
+  --neon-green: #39ff14;
+  --neon-pink: #ff10f0;
+  --neon-blue: #00d9ff;
+  --neon-purple: #b537f2;
+}
+
+/* Apply theme colors to HTML element */
+html {
+  color: var(--text);
+  background-color: var(--background);
+  transition: background-color var(--transition-base) ease,
+    color var(--transition-base) ease;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+}
+
+/* Smooth color transitions for theme switch */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: var(--transition-base);
+  transition-timing-function: ease;
+}
+
+/* Disable transitions for elements that shouldn't animate */
+.no-theme-transition,
+.no-theme-transition * {
+  transition: none !important;
+}
+
+/* Selection colors */
+::selection {
+  background-color: var(--primary);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-color: var(--border) var(--surface);
+  scrollbar-width: thin;
+}
+
+/* Input and form element styling */
+input,
+textarea,
+select {
+  background-color: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+/* Link styling */
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-base) ease;
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+/* Code block styling */
+code,
+pre {
+  background-color: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* Subtle background patterns for different modes */
+@media (prefers-color-scheme: light) {
+  body {
+    background-image: radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-image: radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
