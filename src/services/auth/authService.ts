@@ -7,54 +7,55 @@ import {
   signInWithPopup,
   User as FirebaseUser,
   updateProfile,
-} from 'firebase/auth'
-import { auth, db } from '@/lib/firebase'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
-import { User } from '@/types'
+} from "firebase/auth";
 
-const googleProvider = new GoogleAuthProvider()
+import { auth } from "@/lib/firebase";
+
+import { User } from "@/types";
+
+import {
+  createUserProfile,
+  getUserProfile,
+  updateLastLogin,
+} from "@/services/user/userService";
+
+const googleProvider = new GoogleAuthProvider();
 
 /**
- * Convert Firebase User to our User interface
+ * Convert Firebase User -> App User
  */
-export const firebaseUserToUser = async (firebaseUser: FirebaseUser): Promise<User> => {
-  const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
-  const userData = userDoc.data()
+export const firebaseUserToUser = async (
+  firebaseUser: FirebaseUser
+): Promise<User> => {
+  const profile = await getUserProfile(firebaseUser.uid);
 
   return {
     id: firebaseUser.uid,
-    email: firebaseUser.email || '',
-    name: firebaseUser.displayName || userData?.name || 'User',
-    avatar: firebaseUser.photoURL || userData?.avatar,
-    role: userData?.role || 'user',
-    createdAt: new Date(userData?.createdAt || Date.now()),
-    updatedAt: new Date(userData?.updatedAt || Date.now()),
+    email: firebaseUser.email ?? "",
+    name:
+      firebaseUser.displayName ??
+      profile?.name ??
+      "User",
+    avatar:
+      firebaseUser.photoURL ??
+      profile?.avatar ??
+      null,
+    role: profile?.role ?? "user",
+
+    createdAt:
+      profile?.createdAt?.toDate?.() ??
+      new Date(),
+
+    updatedAt:
+      profile?.updatedAt?.toDate?.() ??
+      new Date(),
+
     lastLogin: new Date(),
-  }
-}
+  };
+};
 
 /**
- * Create user document in Firestore
- */
-export const createUserDocument = async (user: User): Promise<void> => {
-  try {
-    await setDoc(doc(db, 'users', user.id), {
-      email: user.email,
-      name: user.name,
-      avatar: user.avatar || null,
-      role: user.role,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      lastLogin: user.lastLogin,
-    })
-  } catch (error) {
-    console.error('Error creating user document:', error)
-    throw error
-  }
-}
-
-/**
- * Sign up with email and password
+ * Email Signup
  */
 export const signUpWithEmail = async (
   email: string,
@@ -62,122 +63,169 @@ export const signUpWithEmail = async (
   name: string
 ): Promise<User> => {
   try {
-    const result = await createUserWithEmailAndPassword(auth, email, password)
-    const firebaseUser = result.user
+    const credential =
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    // Update profile with display name
-    await updateProfile(firebaseUser, { displayName: name })
+    const firebaseUser = credential.user;
 
-    // Create user document in Firestore
-    const user: User = {
-      id: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: name,
-      avatar: null,
-      role: 'user',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      lastLogin: new Date(),
-    }
+    await updateProfile(firebaseUser, {
+      displayName: name,
+    });
 
-    await createUserDocument(user)
-    return user
+    await createUserProfile(
+      firebaseUser.uid,
+      email,
+      name,
+      null
+    );
+
+    return await firebaseUserToUser(firebaseUser);
   } catch (error: any) {
-    const message = error.message || 'Error signing up'
-    throw new Error(message)
+    throw new Error(getFirebaseError(error.code));
   }
-}
+};
 
 /**
- * Sign in with email and password
+ * Email Login
  */
-export const signInWithEmail = async (email: string, password: string): Promise<User> => {
+export const signInWithEmail = async (
+  email: string,
+  password: string
+): Promise<User> => {
   try {
-    const result = await signInWithEmailAndPassword(auth, email, password)
-    const firebaseUser = result.user
-    const user = await firebaseUserToUser(firebaseUser)
-    return user
+    const credential =
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+    await updateLastLogin(
+      credential.user.uid
+    );
+
+    return await firebaseUserToUser(
+      credential.user
+    );
   } catch (error: any) {
-    const message = error.message || 'Error signing in'
-    throw new Error(message)
+    throw new Error(getFirebaseError(error.code));
   }
-}
+};
 
 /**
- * Sign in with Google
+ * Google Login
  */
-export const signInWithGoogle = async (): Promise<User> => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider)
-    const firebaseUser = result.user
+export const signInWithGoogle =
+  async (): Promise<User> => {
+    try {
+      const credential =
+        await signInWithPopup(
+          auth,
+          googleProvider
+        );
 
-    // Check if user document exists
-    const userDocRef = doc(db, 'users', firebaseUser.uid)
-    const userDoc = await getDoc(userDocRef)
+      const firebaseUser =
+        credential.user;
 
-    if (!userDoc.exists()) {
-      // Create new user document for first-time Google sign-in
-      const user: User = {
-        id: firebaseUser.uid,
-        email: firebaseUser.email || '',
-        name: firebaseUser.displayName || 'User',
-        avatar: firebaseUser.photoURL || null,
-        role: 'user',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        lastLogin: new Date(),
+      const profile =
+        await getUserProfile(
+          firebaseUser.uid
+        );
+
+      if (!profile) {
+        await createUserProfile(
+          firebaseUser.uid,
+          firebaseUser.email ?? "",
+          firebaseUser.displayName ??
+            "User",
+          firebaseUser.photoURL
+        );
+      } else {
+        await updateLastLogin(
+          firebaseUser.uid
+        );
       }
-      await createUserDocument(user)
-      return user
+
+      return await firebaseUserToUser(
+        firebaseUser
+      );
+    } catch (error: any) {
+      throw new Error(getFirebaseError(error.code));
     }
-
-    // Update lastLogin for existing user
-    await setDoc(
-      userDocRef,
-      { lastLogin: new Date() },
-      { merge: true }
-    )
-
-    const user = await firebaseUserToUser(firebaseUser)
-    return user
-  } catch (error: any) {
-    const message = error.message || 'Error signing in with Google'
-    throw new Error(message)
-  }
-}
+  };
 
 /**
- * Send password reset email
+ * Password Reset
  */
-export const sendPasswordReset = async (email: string): Promise<void> => {
-  try {
-    await sendPasswordResetEmail(auth, email)
-  } catch (error: any) {
-    const message = error.message || 'Error sending password reset email'
-    throw new Error(message)
-  }
-}
+export const sendPasswordReset =
+  async (
+    email: string
+  ): Promise<void> => {
+    try {
+      await sendPasswordResetEmail(
+        auth,
+        email
+      );
+    } catch (error: any) {
+      throw new Error(
+        getFirebaseError(error.code)
+      );
+    }
+  };
 
 /**
- * Sign out
+ * Logout
  */
-export const signOutUser = async (): Promise<void> => {
-  try {
-    await signOut(auth)
-  } catch (error: any) {
-    const message = error.message || 'Error signing out'
-    throw new Error(message)
-  }
-}
+export const signOutUser =
+  async (): Promise<void> => {
+    await signOut(auth);
+  };
 
 /**
- * Get current user
+ * Current User
  */
-export const getCurrentUser = async (firebaseUser: FirebaseUser): Promise<User> => {
-  try {
-    return await firebaseUserToUser(firebaseUser)
-  } catch (error) {
-    console.error('Error getting current user:', error)
-    throw error
+export const getCurrentUser =
+  async (
+    firebaseUser: FirebaseUser
+  ): Promise<User> => {
+    return firebaseUserToUser(
+      firebaseUser
+    );
+  };
+
+/**
+ * Firebase Error Mapping
+ */
+function getFirebaseError(
+  code: string
+): string {
+  switch (code) {
+    case "auth/email-already-in-use":
+      return "Email is already registered.";
+
+    case "auth/invalid-email":
+      return "Invalid email address.";
+
+    case "auth/user-not-found":
+      return "No account found.";
+
+    case "auth/wrong-password":
+      return "Incorrect password.";
+
+    case "auth/invalid-credential":
+      return "Invalid email or password.";
+
+    case "auth/weak-password":
+      return "Password must be at least 6 characters.";
+
+    case "auth/popup-closed-by-user":
+      return "Google sign-in was cancelled.";
+
+    default:
+      return "Something went wrong. Please try again.";
   }
 }
