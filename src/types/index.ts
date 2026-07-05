@@ -1,196 +1,85 @@
 // User Types
 export interface User {
-  id: string
-  email: string
-  name: string
-  avatar?: string
-  role: 'user' | 'admin' | 'moderator'
-  createdAt: Date
-  updatedAt: Date
-  lastLogin?: Date
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-// Exam Hierarchy
-export interface Exam {
-  id: string
-  name: string
-  description: string
-  shortCode: string
-  icon?: string
-  createdAt: Date
-  updatedAt: Date
+// PDF & Questions Types
+export interface PDF {
+  id: string;
+  userId: string;
+  filename: string;
+  uploadedAt: Date;
+  fileSize: number;
+  status: 'processing' | 'completed' | 'failed';
+  storageUrl: string;
 }
 
-export interface Category {
-  id: string
-  examId: string
-  name: string
-  description?: string
-  order: number
-  createdAt: Date
-  updatedAt: Date
-}
-
-export interface Subject {
-  id: string
-  categoryId: string
-  name: string
-  description?: string
-  order: number
-  createdAt: Date
-  updatedAt: Date
-}
-
-export interface Topic {
-  id: string
-  subjectId: string
-  name: string
-  description?: string
-  order: number
-  createdAt: Date
-  updatedAt: Date
-}
-
-export interface Chapter {
-  id: string
-  topicId: string
-  name: string
-  description?: string
-  order: number
-  createdAt: Date
-  updatedAt: Date
-}
-
-// Question Types
 export interface Question {
-  id: string
-  chapterId: string
-  questionNumber: number
-  text: string
-  type: 'mcq' | 'numerical' | 'essay' | 'passage'
-  difficulty: 'easy' | 'medium' | 'hard' | 'expert'
-  tags: string[]
-  images?: string[]
-  explanation?: string
-  solutionUrl?: string
-  source?: string
-  year?: number
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  pdfId: string;
+  userId: string;
+  text: string;
+  options: QuestionOption[];
+  correctAnswer: string;
+  category: string;
+  subject: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  explanation?: string;
+  createdAt: Date;
 }
 
 export interface QuestionOption {
-  id: string
-  questionId: string
-  optionLabel: 'A' | 'B' | 'C' | 'D' | 'E'
-  text: string
-  isCorrect: boolean
-  order: number
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  text: string;
+  isCorrect: boolean;
 }
 
-export interface UserAnswer {
-  id: string
-  userId: string
-  questionId: string
-  selectedOption?: string
-  numericalAnswer?: string
-  markedForReview: boolean
-  skipped: boolean
-  answeredAt?: Date
-  timeSpent: number // in seconds
-  createdAt: Date
-  updatedAt: Date
+// User Response Types
+export interface UserResponse {
+  id: string;
+  userId: string;
+  questionId: string;
+  selectedAnswer: string;
+  isCorrect: boolean;
+  timestamp: Date;
+  timeSpent: number; // seconds
 }
 
-// Mock Test & Results
-export interface MockTest {
-  id: string
-  userId: string
-  examId: string
-  categoryId?: string
-  subjectId?: string
-  name: string
-  totalQuestions: number
-  duration: number // in minutes
-  startedAt?: Date
-  completedAt?: Date
-  status: 'not_started' | 'in_progress' | 'completed'
-  createdAt: Date
-  updatedAt: Date
+// Analytics Types
+export interface UserAnalytics {
+  userId: string;
+  totalQuestionsAttempted: number;
+  correctAnswers: number;
+  accuracy: number; // percentage
+  averageTimePerQuestion: number;
+  categoryStats: CategoryStat[];
+  recentActivity: RecentActivity[];
 }
 
-export interface Result {
-  id: string
-  mockTestId: string
-  userId: string
-  totalQuestions: number
-  attempted: number
-  correct: number
-  incorrect: number
-  score: number
-  percentile: number
-  accuracy: number
-  timeSpent: number // in minutes
-  subjectWiseAnalysis: Record<string, SubjectAnalysis>
-  createdAt: Date
-  updatedAt: Date
+export interface CategoryStat {
+  category: string;
+  total: number;
+  correct: number;
+  accuracy: number;
 }
 
-export interface SubjectAnalysis {
-  subjectId: string
-  subjectName: string
-  total: number
-  attempted: number
-  correct: number
-  incorrect: number
-  accuracy: number
-  avgTimePerQuestion: number
+export interface RecentActivity {
+  id: string;
+  type: 'upload' | 'attempt' | 'review';
+  description: string;
+  timestamp: Date;
 }
 
-// Bookmark & Notes
-export interface Bookmark {
-  id: string
-  userId: string
-  questionId: string
-  createdAt: Date
-}
-
-export interface Note {
-  id: string
-  userId: string
-  questionId: string
-  content: string
-  createdAt: Date
-  updatedAt: Date
-}
-
-// PDF Upload
-export interface PDFUpload {
-  id: string
-  userId: string
-  fileName: string
-  fileSize: number
-  storageUrl: string
-  status: 'uploaded' | 'processing' | 'completed' | 'failed'
-  extractedQuestionsCount: number
-  processingError?: string
-  createdAt: Date
-  updatedAt: Date
-}
-
-// Authentication
-export interface AuthSession {
-  user: User
-  token: string
-  expiresAt: Date
-}
-
-// API Response
-export interface ApiResponse<T> {
-  success: boolean
-  data?: T
-  error?: string
-  message?: string
+// Dashboard Types
+export interface DashboardStats {
+  totalPDFs: number;
+  totalQuestions: number;
+  questionsAttempted: number;
+  accuracy: number;
+  streak: number;
 }
