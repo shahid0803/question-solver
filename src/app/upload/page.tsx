@@ -147,7 +147,7 @@ function UploadContent() {
             <div>
               <h2 className="text-3xl font-bold mb-2">Upload Question PDF</h2>
               <p className="text-gray-400">
-                Upload a PDF containing exam questions and we'll automatically extract and organize them for you.
+                Upload a PDF containing exam questions and we&apos;ll automatically extract and organize them for you.
               </p>
             </div>
             <PDFUploadArea onUpload={handleUpload} isLoading={isLoading} />

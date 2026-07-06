@@ -41,7 +41,6 @@ function DashboardContent() {
         <div className="bg-dark-card border border-dark-border rounded-xl p-8">
           <h2 className="text-3xl font-bold mb-2">Welcome, {user?.name}! 👋</h2>
           <p className="text-gray-400 mb-6">Email: {user?.email}</p>
-          <p className="text-gray-400 mb-6">Role: {user?.role}</p>
           <p className="text-gray-300">
             This is your dashboard. More features coming soon! 🚀
           </p>

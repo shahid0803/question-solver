@@ -17,13 +17,3 @@ export { LoadingSpinner } from './LoadingSpinner';
 // Hook exports
 export { useScroll } from '@/lib/hooks/useScroll';
 export { useInView } from '@/lib/hooks/useInView';
-
-// Type exports
-export type { PageTransitionProps } from './PageTransition';
-export type { AnimatedButtonProps } from './AnimatedButton';
-export type { ScrollAnimationProps } from './ScrollAnimation';
-export type { StaggerContainerProps } from './StaggerContainer';
-export type { FloatingElementProps } from './FloatingElement';
-export type { PulseElementProps } from './PulseElement';
-export type { GradientTextProps } from './GradientText';
-export type { LoadingSpinnerProps } from './LoadingSpinner';

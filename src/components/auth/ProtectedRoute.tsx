@@ -33,16 +33,5 @@ export default function ProtectedRoute({
     return null
   }
 
-  if (requiredRole !== 'user' && user?.role !== requiredRole) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card>
-          <h1 className="text-2xl font-bold text-red-500 mb-2">Access Denied</h1>
-          <p className="text-gray-400">You don\'t have permission to access this page.</p>
-        </Card>
-      </div>
-    )
-  }
-
   return <>{children}</>
 }

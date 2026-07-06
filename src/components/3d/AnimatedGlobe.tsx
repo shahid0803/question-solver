@@ -4,26 +4,12 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useThreeScene } from '@/lib/3d/useThreeScene';
 
-interface AnimatedGlobeProps {
+export interface AnimatedGlobeProps {
   className?: string;
   speed?: number;
   wireframe?: boolean;
 }
 
-/**
- * Animated Globe Component
- * Creates a rotating 3D sphere with glow effect
- * Uses Three.js for 3D rendering
- *
- * Features:
- * - Smooth rotation
- * - Customizable speed
- * - Glow effects
- * - Responsive sizing
- *
- * @example
- * <AnimatedGlobe speed={0.001} wireframe={false} />
- */
 export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
   className = '',
   speed = 0.001,
@@ -39,12 +25,10 @@ export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
   useEffect(() => {
     if (!isReady || !containerRef.current || dimensions.width === 0) return;
 
-    // Scene setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
     scene.background = null;
 
-    // Camera setup
     const camera = new THREE.PerspectiveCamera(
       75,
       dimensions.width / dimensions.height,
@@ -54,7 +38,6 @@ export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
     cameraRef.current = camera;
     camera.position.z = 60;
 
-    // Renderer setup
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
@@ -65,13 +48,12 @@ export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
     renderer.setClearColor(0x000000, 0);
     containerRef.current.appendChild(renderer.domElement);
 
-    // Globe (sphere) geometry
     const geometry = new THREE.SphereGeometry(30, 64, 64);
     const material = new THREE.MeshPhongMaterial({
       color: 0x0ea5e9,
       emissive: 0x0ea5e9,
       shininess: 100,
-      wireframe: wireframe,
+      wireframe,
       opacity: 0.8,
       transparent: true,
     });
@@ -80,7 +62,6 @@ export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
     globeRef.current = globe;
     scene.add(globe);
 
-    // Glow layer (outer sphere)
     const glowGeometry = new THREE.SphereGeometry(32, 32, 32);
     const glowMaterial = new THREE.MeshBasicMaterial({
       color: 0x0ea5e9,
@@ -90,7 +71,6 @@ export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
     const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
     scene.add(glowMesh);
 
-    // Lighting
     const light1 = new THREE.DirectionalLight(0xffffff, 1.2);
     light1.position.set(10, 10, 10);
     scene.add(light1);
@@ -102,7 +82,6 @@ export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambientLight);
 
-    // Animation loop
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate);
 
@@ -115,7 +94,6 @@ export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
 
     animate();
 
-    // Handle resize
     const handleResize = () => {
       if (!containerRef.current) return;
 
@@ -129,12 +107,9 @@ export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
 
     window.addEventListener('resize', handleResize);
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-      }
+      if (animationIdRef.current) cancelAnimationFrame(animationIdRef.current);
       if (containerRef.current && renderer.domElement) {
         containerRef.current.removeChild(renderer.domElement);
       }
@@ -150,10 +125,7 @@ export const AnimatedGlobe: React.FC<AnimatedGlobeProps> = ({
     <div
       ref={containerRef}
       className={`absolute inset-0 ${className}`}
-      style={{
-        width: '100%',
-        height: '100%',
-      }}
+      style={{ width: '100%', height: '100%' }}
     />
   );
 };

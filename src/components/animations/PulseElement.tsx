@@ -7,6 +7,7 @@ interface PulseElementProps {
   children: React.ReactNode;
   duration?: number;
   scale?: number;
+  delay?: number;
 }
 
 /**
@@ -14,7 +15,7 @@ interface PulseElementProps {
  * Creates a pulsing scale animation
  *
  * @example
- * <PulseElement duration={2} scale={1.1}>
+ * <PulseElement duration={2} scale={1.1} delay={0.5}>
  *   <div>Pulsing content</div>
  * </PulseElement>
  */
@@ -22,12 +23,14 @@ export const PulseElement: React.FC<PulseElementProps> = ({
   children,
   duration = 2,
   scale = 1.05,
+  delay = 0,
 }) => {
   return (
     <motion.div
       animate={{ scale: [1, scale, 1] }}
       transition={{
         duration,
+        delay,
         repeat: Infinity,
         ease: 'easeInOut',
       }}

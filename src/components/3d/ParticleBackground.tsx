@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { useThreeScene } from '@/lib/3d/useThreeScene';
 import { useMousePosition } from '@/lib/3d/useMousePosition';
 
-interface ParticleBackgroundProps {
+export interface ParticleBackgroundProps {
   particleCount?: number;
   particleSize?: number;
   speed?: number;
@@ -13,25 +13,6 @@ interface ParticleBackgroundProps {
   className?: string;
 }
 
-/**
- * Particle Background Component
- * Creates an animated 3D particle system as background
- * Uses Three.js for rendering
- *
- * Features:
- * - Responsive to window size
- * - Interactive mouse tracking (optional)
- * - Performance optimized with InstancedBufferGeometry
- * - Smooth animations
- *
- * @example
- * <ParticleBackground
- *   particleCount={1000}
- *   particleSize={2}
- *   speed={0.5}
- *   interactive={true}
- * />
- */
 export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   particleCount = 1000,
   particleSize = 2,
@@ -51,13 +32,11 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   useEffect(() => {
     if (!isReady || !containerRef.current || dimensions.width === 0) return;
 
-    // Scene setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
     scene.background = null;
     scene.fog = new THREE.Fog(0x000000, 1000, 3000);
 
-    // Camera setup
     const camera = new THREE.PerspectiveCamera(
       75,
       dimensions.width / dimensions.height,
@@ -67,7 +46,6 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     cameraRef.current = camera;
     camera.position.z = 100;
 
-    // Renderer setup
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
@@ -78,7 +56,6 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     renderer.setClearColor(0x000000, 0);
     containerRef.current.appendChild(renderer.domElement);
 
-    // Particles setup
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
@@ -97,7 +74,6 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     particleVelocitiesRef.current = velocities;
 
-    // Material setup
     const material = new THREE.PointsMaterial({
       size: particleSize,
       sizeAttenuation: true,
@@ -111,16 +87,11 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     particlesRef.current = particles;
     scene.add(particles);
 
-    // Lighting setup
     const light = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(light);
 
-    // Animation loop
-    let frameCount = 0;
-
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate);
-      frameCount++;
 
       if (!particlesRef.current) return;
 
@@ -128,16 +99,12 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
         .array as Float32Array;
       const velocities = particleVelocitiesRef.current!;
 
-      // Update particle positions
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
-
-        // Apply velocities
         positions[i3] += velocities[i3];
         positions[i3 + 1] += velocities[i3 + 1];
         positions[i3 + 2] += velocities[i3 + 2];
 
-        // Wrap around screen
         if (Math.abs(positions[i3]) > 200) velocities[i3] *= -1;
         if (Math.abs(positions[i3 + 1]) > 200) velocities[i3 + 1] *= -1;
         if (Math.abs(positions[i3 + 2]) > 200) velocities[i3 + 2] *= -1;
@@ -145,7 +112,6 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
 
       (particlesRef.current.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
 
-      // Interactive mouse tracking
       if (interactive) {
         const targetX = mousePos.normalizedX * 2 - 1;
         const targetY = -(mousePos.normalizedY * 2 - 1);
@@ -166,7 +132,6 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
 
     animate();
 
-    // Handle resize
     const handleResize = () => {
       if (!containerRef.current) return;
 
@@ -180,12 +145,9 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
 
     window.addEventListener('resize', handleResize);
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-      }
+      if (animationIdRef.current) cancelAnimationFrame(animationIdRef.current);
       if (containerRef.current && renderer.domElement) {
         containerRef.current.removeChild(renderer.domElement);
       }
@@ -199,10 +161,7 @@ export const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     <div
       ref={containerRef}
       className={`absolute inset-0 ${className}`}
-      style={{
-        width: '100%',
-        height: '100%',
-      }}
+      style={{ width: '100%', height: '100%' }}
     />
   );
 };

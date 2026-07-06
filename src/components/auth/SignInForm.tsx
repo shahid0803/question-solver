@@ -154,11 +154,11 @@ export default function SignInForm() {
       </Button>
 
       <p className="text-center text-gray-400 text-sm">
-        Don\'t have an account?{' '}
-        <Link href="/signup" className="text-primary hover:underline">
-          Sign up
-        </Link>
-      </p>
+  Don&apos;t have an account?{' '}
+  <Link href="/signup" className="text-primary hover:underline">
+    Sign up
+  </Link>
+</p>
     </Card>
   )
 }
