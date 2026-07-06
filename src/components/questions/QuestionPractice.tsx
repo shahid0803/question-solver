@@ -45,19 +45,16 @@ setTimeStarted((prev) => ({
 const handleAnswerSelect = (optionId: string) => {
 if (!currentQuestion || hasShownResult) return;
 
-```
 setSelectedAnswers((prev) => ({
   ...prev,
   [currentQuestion.id]: optionId,
 }));
-```
 
 };
 
 const handleNext = async () => {
 if (!currentQuestion) return;
 
-```
 if (!hasShownResult) {
   const selectedAnswer = selectedAnswers[currentQuestion.id];
 
@@ -121,7 +118,6 @@ if (currentIndex < questions.length - 1) {
 } else {
   setSessionComplete(true);
 }
-```
 
 };
 
@@ -144,7 +140,6 @@ const accuracy = totalQuestions === 0 ? 0 : (correctCount / totalQuestions) * 10
 const totalTime = responses.reduce((sum, response) => sum + response.timeSpent, 0);
 const averageTime = totalQuestions === 0 ? 0 : totalTime / totalQuestions;
 
-```
 return (
   <Layout>
     <PageTransition variant="fade">
@@ -226,13 +221,11 @@ return (
     </PageTransition>
   </Layout>
 );
-```
 
 }
 
 return ( <Layout> <PageTransition variant="fade"> <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"> <div className="mb-8"> <div className="flex justify-between items-center mb-3"> <div> <h2 className="text-2xl font-bold">Practice Session</h2> <p className="text-text-secondary">PDF ID: {pdfId}</p> </div>
 
-```
           <div className="text-right">
             <p className="text-sm text-text-secondary">Question</p>
             <p className="text-2xl font-bold">
@@ -296,7 +289,6 @@ return ( <Layout> <PageTransition variant="fade"> <div className="max-w-7xl mx-a
     </div>
   </PageTransition>
 </Layout>
-```
 
 );
 };
