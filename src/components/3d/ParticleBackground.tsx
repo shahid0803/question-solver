@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useThreeScene } from '@/lib/3d/useThreeScene';
-import { useMousePosition } from '@/lib/3d/useMousePosition';
+import useMousePosition from '@/lib/3d/useMousePosition';
 
 export interface ParticleBackgroundProps {
   particleCount?: number;
