@@ -1,45 +1,36 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
 
-export const HeroContent: React.FC = () => {
+export default function HeroContent() {
   return (
-    <div className="max-w-2xl">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/75 backdrop-blur-md"
-      >
-        <span className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.9)]" />
-        AI Powered Learning Platform
-      </motion.div>
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.9 }}
+    >
+      <div className="inline-flex rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-300 backdrop-blur-xl">
+        🚀 AI Powered Exam Preparation
+      </div>
 
-      <motion.h1
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.08 }}
-        className="mt-6 text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl"
-      >
-        Master Your Next Exam
-        <span className="mt-3 block bg-gradient-to-r from-violet-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">
-          with AI & Smart Practice
+      <h1 className="mt-8 text-6xl md:text-7xl xl:text-8xl font-bold leading-[0.95] tracking-tight text-white">
+        Master Every
+        <br />
+
+        <span className="bg-gradient-to-r from-cyan-400 via-violet-400 to-orange-400 bg-clip-text text-transparent">
+          Competitive Exam
         </span>
-      </motion.h1>
 
-      <motion.p
-        initial={{ opacity: 0, y: 22 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: 'easeOut', delay: 0.16 }}
-        className="mt-6 max-w-xl text-base leading-7 text-slate-300 sm:text-lg"
-      >
-        Start solving ready-made question sets instantly or generate personalized practice
-        from your PDFs with AI. Learn faster with analytics, progress tracking, and focused
-        revision.
-      </motion.p>
-    </div>
+        <br />
+
+        with AI
+      </h1>
+
+      <p className="mt-8 max-w-xl text-lg leading-8 text-gray-400">
+        Practice real previous year questions for GATE, UPSC, CAT,
+        IIT JAM and NET-JRF—or upload any PDF and let AI instantly
+        create an interactive practice session.
+      </p>
+    </motion.div>
   );
-};
-
-export default HeroContent;
+}
