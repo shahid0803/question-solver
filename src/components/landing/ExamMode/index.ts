@@ -1,0 +1,1 @@
+export { default as ExamMode } from './ExamMode';
