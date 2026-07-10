@@ -1,35 +1,25 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
-
-const stats = [
-  { value: '50K+', label: 'Students' },
-  { value: '1M+', label: 'Questions' },
-  { value: '98%', label: 'Accuracy' },
+const exams = [
+  'GATE',
+  'UPSC',
+  'CAT',
+  'NET-JRF',
+  'IIT JAM',
+  'SSC',
 ];
 
-export const HeroStats: React.FC = () => {
+export default function HeroStats() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: 'easeOut', delay: 0.32 }}
-      className="mt-10 grid grid-cols-3 gap-3 sm:gap-4 max-w-xl"
-    >
-      {stats.map((stat) => (
+    <div className="mt-12 flex flex-wrap gap-3">
+      {exams.map((exam) => (
         <div
-          key={stat.label}
-          className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-center backdrop-blur-md"
+          key={exam}
+          className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-gray-300 backdrop-blur-xl"
         >
-          <div className="text-2xl font-extrabold text-white sm:text-3xl">{stat.value}</div>
-          <div className="mt-1 text-xs uppercase tracking-[0.22em] text-slate-400">
-            {stat.label}
-          </div>
+          {exam}
         </div>
       ))}
-    </motion.div>
+    </div>
   );
-};
-
-export default HeroStats;
+}

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import HeroContent from './HeroContent';
 import HeroButtons from './HeroButtons';
 import HeroStats from './HeroStats';
+import Scene from '../ThreeScene/Scene';
 
 export const Hero: React.FC = () => {
   return (
@@ -29,10 +30,14 @@ export const Hero: React.FC = () => {
           transition={{ duration: 0.8, ease: 'easeOut', delay: 0.15 }}
           className="flex items-center justify-center"
         >
-          <div className="relative w-full max-w-[640px]">
+          <div className="relative w-full max-w-[640px] overflow-visible">
+
+           
+
             <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-r from-violet-500/20 via-cyan-400/10 to-orange-400/20 blur-3xl" />
             <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-xl">
               <div className="relative aspect-[4/3] rounded-[1.5rem] border border-white/10 bg-[#0b1220]">
+              <Scene />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(109,93,246,0.18),transparent_55%)]" />
                 <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/10 to-transparent" />
 
